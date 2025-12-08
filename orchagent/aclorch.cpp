@@ -41,7 +41,8 @@ extern Directory<Orch*> gDirectory;
 #define STATE_DB_ACL_ACTION_FIELD_IS_ACTION_LIST_MANDATORY "is_action_list_mandatory"
 #define STATE_DB_ACL_ACTION_FIELD_ACTION_LIST              "action_list"
 #define STATE_DB_ACL_L3V4V6_SUPPORTED                      "supported_L3V4V6"
-#define COUNTERS_ACL_COUNTER_RULE_MAP "ACL_COUNTER_RULE_MAP"
+#define COUNTERS_ACL_COUNTER_RULE_MAP                      "ACL_COUNTER_RULE_MAP"
+#define COUNTERS_ACL_TABLE_NAME_MAP                        "ACL_COUNTER_TABLE_NAME_MAP"
 
 #define ACL_COUNTER_DEFAULT_POLLING_INTERVAL_MS 10000 // ms
 #define ACL_COUNTER_DEFAULT_ENABLED_STATE false
@@ -2841,6 +2842,7 @@ bool AclTable::create()
     table_attrs.push_back(attr);
 
     sai_status_t status = sai_acl_api->create_acl_table(&m_oid, gSwitchId, (uint32_t)table_attrs.size(), table_attrs.data());
+	m_countersDb.hset(COUNTERS_ACL_TABLE_NAME_MAP, id.c_str(), m_oid);
     if (status != SAI_STATUS_SUCCESS)
     {
         return false;
