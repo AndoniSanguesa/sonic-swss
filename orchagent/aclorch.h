@@ -554,6 +554,8 @@ public:
 private:
     sai_object_id_t m_oid = SAI_NULL_OBJECT_ID;
     AclOrch *m_pAclOrch = nullptr;
+
+    static DBConnector m_countersDb;
 };
 
 class AclOrch : public Orch, public Observer
