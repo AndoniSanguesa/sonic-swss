@@ -21,6 +21,8 @@ map<acl_range_properties_t, AclRange*> AclRange::m_ranges;
 sai_uint32_t AclRule::m_minPriority = 0;
 sai_uint32_t AclRule::m_maxPriority = 0;
 
+swss::DBConnector AclTable::m_countersDb("COUNTERS_DB", 0);
+
 swss::DBConnector AclOrch::m_countersDb("COUNTERS_DB", 0);
 swss::Table AclOrch::m_countersTable(&m_countersDb, "COUNTERS");
 
@@ -2841,8 +2843,9 @@ bool AclTable::create()
     attr.value.s32 = acl_stage;
     table_attrs.push_back(attr);
 
+	auto tableOidStr = sai_serialize_object_id(m_oid);
     sai_status_t status = sai_acl_api->create_acl_table(&m_oid, gSwitchId, (uint32_t)table_attrs.size(), table_attrs.data());
-	m_countersDb.hset(COUNTERS_ACL_TABLE_NAME_MAP, id.c_str(), m_oid);
+	m_countersDb.hset(COUNTERS_ACL_TABLE_NAME_MAP, id.c_str(), tableOidStr);
     if (status != SAI_STATUS_SUCCESS)
     {
         return false;
